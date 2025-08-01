@@ -2,19 +2,22 @@
   "name": "git-line-log",
   "displayName": "Git Line Log",
   "description": "Easily review single line log",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "luisAzcuaga",
   "icon": "icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/luisAzcuaga/git-line-log"},
+    "url": "https://github.com/luisAzcuaga/git-line-log"
+  },
   "engines": {
     "vscode": "^1.54.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onLanguage"],
+  "activationEvents": [
+    "onLanguage"
+  ],
   "main": "./extension.js",
   "scripts": {
     "lint": "eslint .",
