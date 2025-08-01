@@ -22,5 +22,8 @@ export default [{
       "constructor-super": "warn",
       "valid-typeof": "warn",
       "indent": ["warn", 2],
+      "no-multiple-empty-lines": ["warn", { "max": 1 }],
+      "no-trailing-spaces": "warn",
+      "eol-last": "warn",
     },
 }];
