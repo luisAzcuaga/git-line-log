@@ -3,6 +3,7 @@
   "displayName": "Git Line Log",
   "description": "Easily review single line log",
   "version": "1.0.0",
+  "publisher": "luisAzcuaga",
   "repository": {
     "type": "git",
     "url": "https://github.com/luisAzcuaga/git-line-log"},
