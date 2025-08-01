@@ -2,29 +2,39 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+let prevLine = 0;
+let prevFileName = '';
+
+function formString(currentLine, fileName) {
+ return `git log -L ${currentLine},${currentLine}:${fileName}`;
+}
+
+function runGitLineLogCommand(currentLine, fileName) {
+  const contentString = formString(currentLine, fileName);
+  const terminal = vscode.window.createTerminal('Git Line Log');
+  const terminalOutput = terminal.sendText(contentString);
+  terminal.show();
+  return '';
+}
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "git-line-log" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('git-line-log.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Git Line Log!');
-	});
-
-	context.subscriptions.push(disposable);
+  vscode.languages.registerHoverProvider('*', {
+    provideHover(document, position) {
+      const currentLine = position.line + 1;
+      const currentFileName = vscode.workspace.asRelativePath(document.fileName);
+      if (prevLine !== currentLine || prevFileName !== currentFileName) {
+        prevLine = currentLine;
+        prevFileName = currentFileName;
+        const result = runGitLineLogCommand(currentLine, currentFileName);
+        return {
+          contents: [result],
+        }
+      }
+    }
+  });
 }
 
 // This method is called when your extension is deactivated

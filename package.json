@@ -9,14 +9,8 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["onLanguage"],
   "main": "./extension.js",
-  "contributes": {
-    "commands": [{
-      "command": "git-line-log.helloWorld",
-      "title": "Hello World"
-    }]
-  },
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
