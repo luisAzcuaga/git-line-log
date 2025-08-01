@@ -26,7 +26,6 @@ async function runGitLineLogCommand(currentLine, fileName) {
   try {
     const contentString = formString(currentLine, fileName);
     const terminalOutput = await executeCommandAndGetOutput(contentString);
-
     // Format the git log output for better display
     return formatGitLogOutput(terminalOutput);
   } catch (error) {
@@ -43,17 +42,10 @@ function formatGitLogOutput(gitOutput) {
 
   // Extract the file extension from the diff line to set the language for syntax highlighting
   const diffLine = lines.find(line => line.includes('diff --git'));
-  const fileExtension = diffLine ? diffLine.match(/\.([a-zA-Z0-9]+)$/)?.[1] || '' : '';
-  // Filter to only keep lines that show actual code changes (+ or -)
-  const displayLines = lines.filter(line => /^[+-](?![+-])/.test(line));
+  const fileExtension = 'diff' || diffLine.match(/\.([a-zA-Z0-9]+)$/)?.[1];
 
-  // Limit the number of lines to prevent overly large tooltips
-  // const maxLines = 30;
-  // const displayLines = filteredLines.slice(0, maxLines);
-
-  // if (filteredLines.length > maxLines) {
-  //   displayLines.push('...', `(${filteredLines.length - maxLines} more lines truncated)`);
-  // }
+  // Filter to only keep lines that show actual code changes (+ or -) and commit/author info
+  const displayLines = lines.filter(line => /^[+-](?![+-])|^(commit|Author)/.test(line));
 
   return `\`\`\`${fileExtension}\n${displayLines.join('\n')}\n\`\`\``;
 }
