@@ -47,7 +47,31 @@ function formatGitLogOutput(gitOutput) {
   // Filter to only keep lines that show actual code changes (+ or -) and commit/author info
   const displayLines = lines.filter(line => /^[+-](?![+-])|^(commit|Author)/.test(line));
 
-  return `\`\`\`${fileExtension}\n${displayLines.join('\n')}\n\`\`\``;
+  // Process lines to format commit and author info more compactly
+  const processedLines = [];
+  let currentCommit = null;
+  let currentAuthor = null;
+
+  for (const line of displayLines) {
+    if (line.startsWith('commit ')) {
+      currentCommit = line.match(/commit ([a-f0-9]+)/)?.[1]?.substring(0, 7) || line.substring(7);
+    } else if (line.startsWith('Author: ')) {
+      const authorMatch = line.match(/Author: ([^<]+)/);
+      currentAuthor = authorMatch?.[1]?.trim() || line.substring(8);
+
+      // When we have both commit and author, add the formatted line
+      if (currentCommit && currentAuthor) {
+        processedLines.push(` commit: ${currentCommit} | Author: ${currentAuthor}`);
+        currentCommit = null;
+        currentAuthor = null;
+      }
+    } else {
+      // Keep code change lines as they are
+      processedLines.push(line);
+    }
+  }
+
+  return `\`\`\`${fileExtension}\n${processedLines.join('\n')}\n\`\`\``;
 }
 
 function activate(context) {
