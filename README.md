@@ -17,14 +17,6 @@ Easy to read tooltip containing historical changes of a hovered line.
 
 Nothing just yet. :)
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release
-
 ---
 
 **Enjoy!**
