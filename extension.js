@@ -10,7 +10,7 @@ function executeCommandAndGetOutput(command) {
 
     return child_process.exec(command, options, (error, stdout, stderr) => {
       if (error) {
-        reject(`${error.message}\n${stderr}`);
+        reject(stderr);
       } else {
         resolve(stdout);
       }
@@ -23,19 +23,23 @@ function formString(currentLine, fileName) {
 }
 
 async function runGitLineLogCommand(currentLine, fileName) {
+  const contentString = formString(currentLine, fileName);
   try {
-    const contentString = formString(currentLine, fileName);
     const terminalOutput = await executeCommandAndGetOutput(contentString);
-    // Format the git log output for better display
     return formatGitLogOutput(terminalOutput);
   } catch (error) {
-    return `**Error:** ${error}`;
+    if (/fatal: There is no path .+ in the commit/.test(error)) {
+      return 'Git Line Log: Untracked file'
+    } else if (/fatal: file .+ has only \d+ lines/.test(error)) {
+      return 'Git Line Log: Uncommited line'
+    }
+    return `Git Line Log Error: ${error}`;
   }
 }
 
 function formatGitLogOutput(gitOutput) {
-  if (!gitOutput || gitOutput.trim() === '') {
-    return '**No git history found for this line**';
+  if (!gitOutput) {
+    return 'Git Line Log: No output received 🙈';
   }
   const lines = gitOutput.trim().split('\n');
   // Filter to only keep lines that show actual code changes (+ or -) and commit/author/date info
@@ -78,17 +82,11 @@ function formatGitLogOutput(gitOutput) {
 function activate(context) {
   vscode.languages.registerHoverProvider('*', {
     async provideHover(document, position) {
-      try {
         const currentLine = position.line + 1;
         const currentFileName = vscode.workspace.asRelativePath(document.fileName);
         const result = await runGitLineLogCommand(currentLine, currentFileName);
         return {
           contents: [`Ran: ${formString(currentLine, currentFileName)}`, new vscode.MarkdownString(result)],
-        }
-      } catch (error) {
-        return {
-          contents: [new vscode.MarkdownString(`**Error:** ${error.message || error}`)],
-        };
       }
     }
   });
