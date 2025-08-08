@@ -76,17 +76,17 @@ function formatGitLogOutput(gitOutput) {
     }
   }
 
-  return `\`\`\`${fileExtension}\n${processedLines.join('\n')}\n\`\`\``;
+  return `\`\`\`diff\n${processedLines.join('\n')}\n\`\`\``;
 }
 
 function activate(context) {
   vscode.languages.registerHoverProvider('*', {
     async provideHover(document, position) {
-        const currentLine = position.line + 1;
-        const currentFileName = vscode.workspace.asRelativePath(document.fileName);
-        const result = await runGitLineLogCommand(currentLine, currentFileName);
-        return {
-          contents: [`Ran: ${formString(currentLine, currentFileName)}`, new vscode.MarkdownString(result)],
+      const currentLine = position.line + 1;
+      const currentFileName = vscode.workspace.asRelativePath(document.fileName);
+      const result = await runGitLineLogCommand(currentLine, currentFileName);
+      return {
+        contents: [`Ran: ${formString(currentLine, currentFileName)}`, new vscode.MarkdownString(result)],
       }
     }
   });
