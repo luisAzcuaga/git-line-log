@@ -48,7 +48,7 @@ function formatGitLogOutput(gitOutput) {
 
   for (const line of displayLines) {
     if (line.startsWith('commit ')) {
-      currentCommit = line.match(/commit ([a-f0-9]+)/)?.[1]?.substring(0, 7) || line.substring(7);
+      currentCommit = line.match(/commit ([a-f0-9]+)/)?.[1]?.substring(0, 7);
     } else if (line.startsWith('Author: ')) {
       const authorMatch = line.match(/Author: ([^<]+)/);
       currentAuthor = authorMatch?.[1]?.trim() || line.substring(8);
