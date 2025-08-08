@@ -44,6 +44,7 @@ function formatGitLogOutput(gitOutput) {
   // Process lines to format commit and author info more compactly
   const processedLines = [];
   let currentCommit = null;
+  let commitDate = null;
   let currentAuthor = null;
 
   for (const line of displayLines) {
@@ -52,10 +53,16 @@ function formatGitLogOutput(gitOutput) {
     } else if (line.startsWith('Author: ')) {
       const authorMatch = line.match(/Author: ([^<]+)/);
       currentAuthor = authorMatch?.[1]?.trim() || line.substring(8);
-
-      // When we have both commit and author, add the formatted line
+    } else if (line.startsWith('Date: ')) {
+      const dateRegexMatch = line.match(/Date: (.+)/)?.[1]?.trim();
+      commitDate = new Date(dateRegexMatch).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
       if (currentCommit && currentAuthor) {
-        processedLines.push(` commit: ${currentCommit} | Author: ${currentAuthor}`);
+        processedLines.push(`commit: ${currentCommit} | 🧑🏻‍💻 ${currentAuthor} | 📅 ${commitDate}`);
+        commitDate = null;
         currentCommit = null;
         currentAuthor = null;
       }
