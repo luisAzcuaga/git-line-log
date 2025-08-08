@@ -37,15 +37,9 @@ function formatGitLogOutput(gitOutput) {
   if (!gitOutput || gitOutput.trim() === '') {
     return '**No git history found for this line**';
   }
-
   const lines = gitOutput.trim().split('\n');
-
-  // Extract the file extension from the diff line to set the language for syntax highlighting
-  const diffLine = lines.find(line => line.includes('diff --git'));
-  const fileExtension = 'diff' || diffLine.match(/\.([a-zA-Z0-9]+)$/)?.[1];
-
-  // Filter to only keep lines that show actual code changes (+ or -) and commit/author info
-  const displayLines = lines.filter(line => /^[+-](?![+-])|^(commit|Author)/.test(line));
+  // Filter to only keep lines that show actual code changes (+ or -) and commit/author/date info
+  const displayLines = lines.filter(line => /^[+-](?![+-])|^(commit|Author|Date)/.test(line));
 
   // Process lines to format commit and author info more compactly
   const processedLines = [];
