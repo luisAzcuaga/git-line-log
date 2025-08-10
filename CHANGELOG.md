@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.2.1
+
+- Fix raw command format (no format -> monospace)
+- Increased icon resolution
+
 ### 1.2.0
 
 - Change author text for an emoji 🧑🏻‍💻
